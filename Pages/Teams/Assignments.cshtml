@@ -1,5 +1,33 @@
 @page
 @using Pool50.Pages
+@using Pool50.SQLite
 @model AssignmentsModel
 
-<h1>Team Assignments Will Go Here</h1>
+@if(Model.myTeam !=null){
+    <p>Congratulations! You are the proud owner of the <b>@Model.myTeam.Name</b>!</p>
+} else {
+    <p>It seems you are not yet one of our proud owners.</p>
+}
+@if(Model.canRequest){
+    <p>Would you like to own one of our teams?</p>
+    <form method='POST' target="./"><p>Yes! Sign me up for an available team!</p>
+    <input type="hidden" asp-for="action" value="requestTeam"/>
+    <input type="submit"/></form>
+}
+<p>These teams have not yet been assigned:</p>
+<ul>
+@foreach(Team team in Model.availableTeams){<li>@team.Name</li>}
+</ul>
+<h1>Current Owners:</h1>
+<table>
+    <thead>
+        <th>TeamId&nbsp;</th>
+        <th>Username&nbsp;</th>
+        <th>Full Name&nbsp;</th>
+    </thead>
+    <tbody>
+        @foreach(Owner owner in Model.ownerAssignments){
+            <tr><td>@owner.Team.Name</td><td>@owner.Username</td><td>@owner.FullName</td></tr>
+        }
+    </tbody>
+</table>

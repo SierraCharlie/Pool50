@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace pool
+namespace Pool50
 {
     public class Startup
     {
