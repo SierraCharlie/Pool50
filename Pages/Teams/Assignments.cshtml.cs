@@ -31,6 +31,11 @@ namespace Pool50.Pages
             PoolContext dbCtx = new PoolContext();
             availableTeams =dbCtx.Teams.OrderBy(t => t.Name).Where(t => !dbCtx.Owners.Select(o => o.TeamId).Contains(t.TeamId)).ToList();
             ownerAssignments = dbCtx.Owners.Include(o => o.Team).OrderBy(o => o.Username).ToList();
+            foreach (Claim thisClaim in HttpContext.User.Claims) 
+            {
+                String value = thisClaim.Value.ToString();
+                String claimName = thisClaim.Type.ToString();
+            }
             checkCurrentOwnership(dbCtx);
             dbCtx.Dispose();
             return Page();
@@ -46,14 +51,13 @@ namespace Pool50.Pages
             ownerAssignments = dbCtx.Owners.OrderBy(o => o.Username).ToList();
             checkCurrentOwnership(dbCtx);
             String userId = HttpContext.User.FindFirst(ClaimTypes.Name).Value.ToString();
-            String givenName = HttpContext.User.FindFirst(ClaimTypes.GivenName).Value.ToString();
-            String lastName = HttpContext.User.FindFirst(ClaimTypes.Surname).Value.ToString();
+            String fullName = findFullName();
             if (canRequest) {
                 Team chosenTeam = availableTeams.ToArray()[new Random().Next(availableTeams.Count)];
                 Owner newOwner = new Owner {
                     Username = userId,
                     Team = chosenTeam,
-                    FullName = givenName+" "+lastName
+                    FullName = fullName
                 };
                 dbCtx.Owners.Add(newOwner);
                 dbCtx.SaveChanges();
@@ -63,8 +67,6 @@ namespace Pool50.Pages
 
         protected void checkCurrentOwnership(PoolContext dbCtx) {
             String userId = HttpContext.User.FindFirst(ClaimTypes.Name).Value.ToString();
-            String givenName = HttpContext.User.FindFirst(ClaimTypes.GivenName).Value.ToString();
-            String lastName = HttpContext.User.FindFirst(ClaimTypes.Surname).Value.ToString();
             canRequest = false;
             myTeam = null;
             if ((userId != null)&&(userId.Length > 0))
@@ -75,6 +77,35 @@ namespace Pool50.Pages
                     myTeam = owner.Team;
                 }
             }
+        }
+
+        protected String findFullName() {
+            String fullName = null;
+            try {
+                String givenName = HttpContext.User.FindFirst(ClaimTypes.GivenName).Value.ToString();
+                String lastName = HttpContext.User.FindFirst(ClaimTypes.Surname).Value.ToString();
+                fullName = lastName+", "+givenName;
+            } catch (Exception ex) {
+                fullName = null;
+            }
+            if (fullName == null) {
+                try {
+                    fullName = HttpContext.User.FindFirst("name").Value.ToString();
+                } catch (Exception ex) {
+                    fullName = null;
+                }
+            }
+            if (fullName == null) {
+                try {
+                    fullName = HttpContext.User.FindFirst(ClaimTypes.Name).Value.ToString();
+                } catch (Exception ex) {
+                    fullName = null;
+                }
+            }
+            if (fullName == null) {
+                fullName = "<not available>";
+            }
+            return fullName;
         }
     }
 }

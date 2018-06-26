@@ -5,7 +5,7 @@
 
 @if(Model.myTeam !=null){
     <p>Congratulations! You are the proud owner of the <b>@Model.myTeam.Name</b>!</p>
-    <img src="../logos/@Model.myTeam.LogoFileName()" alt="team logo"/>
+    <img src="../logos/@Model.myTeam.LogoFileName()" alt="@Model.myTeam.Name logo" style="max-width: 64px; max-height: 32px;"/>
 } else {
     <p>It seems you are not yet one of our proud owners.</p>
 }
@@ -17,18 +17,19 @@
 }
 <p>These teams have not yet been assigned:</p>
 <ul>
-@foreach(Team team in Model.availableTeams){<li>@team.Name</li>}
+@foreach(Team team in Model.availableTeams){<li>@team.Name     <img src="../logos/@team.LogoFileName()" alt="@team.Name logo" style="max-width: 32px; max-height: 16px;"/>
+</li>}
 </ul>
 <h1>Current Owners:</h1>
 <table>
     <thead>
-        <th>TeamId&nbsp;</th>
+        <th>TeamName&nbsp;</th>
         <th>Username&nbsp;</th>
         <th>Full Name&nbsp;</th>
     </thead>
     <tbody>
         @foreach(Owner owner in Model.ownerAssignments){
-            <tr><td>@owner.Team.Name</td><td>@owner.Username</td><td>@owner.FullName</td></tr>
+            <tr><td><img src="../logos/@owner.Team.LogoFileName()" alt="@owner.Team.Name logo" style="max-width: 32px; max-height: 16px;"/>@owner.Team.Name</td><td>@owner.Username</td><td>@owner.FullName</td></tr>
         }
     </tbody>
 </table>
