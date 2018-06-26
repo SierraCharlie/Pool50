@@ -5,6 +5,7 @@
 
 @if(Model.myTeam !=null){
     <p>Congratulations! You are the proud owner of the <b>@Model.myTeam.Name</b>!</p>
+    <img src="../logos/@Model.myTeam.LogoFileName()" alt="team logo"/>
 } else {
     <p>It seems you are not yet one of our proud owners.</p>
 }
