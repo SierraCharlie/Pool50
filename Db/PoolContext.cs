@@ -60,6 +60,10 @@ namespace Pool50.SQLite
         public int TeamId { get; set; }
         public string Name { get; set; }
 
+        public string LogoFileName() 
+        {
+            return this.Name.Replace(' ','-').ToLower().Replace(".",string.Empty)+"-logo.png";
+        }
     }
 
     public class Owner {
