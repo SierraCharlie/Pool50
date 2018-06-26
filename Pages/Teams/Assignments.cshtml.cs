@@ -81,20 +81,23 @@ namespace Pool50.Pages
                 String givenName = HttpContext.User.FindFirst(ClaimTypes.GivenName).Value.ToString();
                 String lastName = HttpContext.User.FindFirst(ClaimTypes.Surname).Value.ToString();
                 fullName = lastName+", "+givenName;
-            } catch (Exception ex) {
+            } catch (Exception)
+            {
                 fullName = null;
             }
             if (fullName == null) {
                 try {
                     fullName = HttpContext.User.FindFirst("name").Value.ToString();
-                } catch (Exception ex) {
+                } catch (Exception)
+                {
                     fullName = null;
                 }
             }
             if (fullName == null) {
                 try {
                     fullName = HttpContext.User.FindFirst(ClaimTypes.Name).Value.ToString();
-                } catch (Exception ex) {
+                } catch (Exception)
+                {
                     fullName = null;
                 }
             }
