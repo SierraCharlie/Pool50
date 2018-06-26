@@ -31,11 +31,6 @@ namespace Pool50.Pages
             PoolContext dbCtx = new PoolContext();
             availableTeams =dbCtx.Teams.OrderBy(t => t.Name).Where(t => !dbCtx.Owners.Select(o => o.TeamId).Contains(t.TeamId)).ToList();
             ownerAssignments = dbCtx.Owners.Include(o => o.Team).OrderBy(o => o.Username).ToList();
-            foreach (Claim thisClaim in HttpContext.User.Claims) 
-            {
-                String value = thisClaim.Value.ToString();
-                String claimName = thisClaim.Type.ToString();
-            }
             checkCurrentOwnership(dbCtx);
             dbCtx.Dispose();
             return Page();
@@ -62,6 +57,7 @@ namespace Pool50.Pages
                 dbCtx.Owners.Add(newOwner);
                 dbCtx.SaveChanges();
             }
+            dbCtx.Dispose();
             return OnGet();
         }
 
